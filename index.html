@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiteRight</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        .logo-container img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        header h1 {
+            font-size: 24px;
+            color: #d88db6;
+            margin: 0;
+        }
+        header nav a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+        header nav a:hover {
+            text-decoration: underline;
+        }
+        .section {
+            display: none;
+            max-width: 800px;
+            margin: 30px auto;
+            text-align: left;
+        }
+        .diet-selection, .exclusion-section, .general-info-section, .taste-section {
+            text-align: center;
+        }
+        .diet-options img {
+            width: 100px;
+            margin: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 8px;
+        }
+        .diet-options img:hover {
+            border-color: #d88db6;
+        }
+        .exclusion-category {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .exclusion-category h3 {
+            width: 150px;
+            margin-right: 20px;
+            font-size: 18px;
+        }
+        .exclusion-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .exclusion-item {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .exclusion-item.selected {
+            background-color: #d88db6;
+            color: white;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 600px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            padding: 8px;
+            width: 100%;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .gender-options span, .spice-options span {
+            display: inline-block;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .gender-options span.selected, .spice-options span.selected {
+            background-color: #d88db6;
+            color: white;
+            border-color: #d88db6;
+        }
+        .gender-options span:hover, .spice-options span:hover {
+            border-color: #007bff;
+        }
+        .button-container {
+    margin: 20px 0;
+    text-align: center;
+    display: block; /* Ensure buttons are always visible */
+}
+.button-container button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.button-container button:hover {
+    background-color: #0056b3;
+}
+
+
+        .calendar-container {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            max-width: 1000px;
+            margin: 30px auto;
+        }
+       
+    #calendar-container {
+        border: 2px solid red; /* Outline for visibility */
+        padding: 20px;
+        min-height: 200px;
+    }
+
+        .day {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #ffffff;
+            text-align: center;
+        }
+        .day img {
+            width: 50px;
+            margin-top: 10px;
+        }
+        .buttons-container {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            justify-content: center;
+        }
+
+    #loading-spinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 8px;
+    }
+    .meal {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .meal img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .meal button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .meal button:hover {
+            background-color: #0056b3;
+        }
+        .recipe-page {
+            display: none;
+            text-align: left;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .qa-section {
+            margin-top: 20px;
+        }
+        .qa-section input, .qa-section button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+        }
+</style>
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="logo.png" alt="BiteRight Logo">
+            <h1>BiteRight</h1>
+        </div>
+        <nav>
+            <a href="#" onclick="showSection('diet-selection')">Home</a>
+            <a href="#">How It Works</a>
+            <a href="#">Log In</a>
+        </nav>
+    </header>
+
+    <!-- Diet Selection Section -->
+    <main class="section diet-selection" style="display: block;">
+        <h2>----Eat Right, No Worry In Sight----</h2>
+        <p>Select a preset diet (If your diet isn’t on these presets, you can customize it later.)</p>
+        <div class="diet-options">
+            <img src="vegan.png" alt="Vegan" onclick="selectDiet('vegan')">
+            <img src="vegetarian.png" alt="Vegetarian" onclick="selectDiet('vegetarian')">
+            <img src="kosher.png" alt="Kosher" onclick="selectDiet('kosher')">
+            <img src="dairy-free.png" alt="Dairy-Free" onclick="selectDiet('dairy-free')">
+            <img src="nut-free.png" alt="Nut-Free" onclick="selectDiet('nut-free')">
+        </div>
+    </main>
+
+    <!-- Exclusion Section -->
+    <main class="section exclusion-section">
+        <h2>Customize Your Exclusions</h2>
+        <div id="exclusion-content"></div> <!-- Exclusions are generated here -->
+        <div class="button-container">
+            <button onclick="goToGeneralInfo()">Next</button>
+        </div>
+    </main>
+    
+    <!-- General Info Section -->
+    <main class="section general-info-section">
+        <h2>Tell Us More About Yourself</h2>
+        <div class="input-group">
+            <label>What’s your gender?</label>
+            <div class="gender-options">
+                <span onclick="selectOption(this, 'gender')">Male</span>
+                <span onclick="selectOption(this, 'gender')">Female</span>
+                <span onclick="selectOption(this, 'gender')">Prefer not to say</span>
+            </div>
+        </div>
+        <div class="input-group">
+            <label for="age">How old are you?</label>
+            <input type="number" id="age" placeholder="Enter your age">
+        </div>
+        <div class="input-group">
+            <label for="height">How tall are you?</label>
+            <input type="text" id="height" placeholder="Enter your height (e.g., 5'9'')">
+        </div>
+        <div class="input-group">
+            <label for="weight">How much do you weigh?</label>
+            <input type="number" id="weight" placeholder="Enter your weight in lbs">
+        </div>
+        <div class="button-container">
+            <button onclick="goToTastePreferences()">Next</button>
+        </div>
+    </main>
+
+    <!-- Taste Preferences Section -->
+
+<main class="section taste-section">
+    <h2>What Do You Like to Eat?</h2>
+    <div class="input-group">
+        <label for="cuisines">Top 3 Cuisines:</label>
+        <input type="text" id="cuisines" placeholder="e.g., Italian, Indian, Mexican">
+    </div>
+    <div class="input-group">
+        <label>Spice Tolerance (1, 2, 3, 4, or 5):</label>
+        <div class="spice-options">
+            <span onclick="selectOption(this, 'spice')">1</span>
+            <span onclick="selectOption(this, 'spice')">2</span>
+            <span onclick="selectOption(this, 'spice')">3</span>
+            <span onclick="selectOption(this, 'spice')">4</span>
+            <span onclick="selectOption(this, 'spice')">5</span>
+        </div>
+    </div>
+    <div class="input-group">
+        <label for="favoriteFood">Favorite Food:</label>
+        <input type="text" id="favoriteFood" placeholder="e.g., Pizza, Sushi">
+    </div>
+    <div class="button-container">
+        <button onclick="goToMealPlan()">Finish Survey</button>
+    </div>
+</main>
+
+<!-- Meal Plan Section -->
+<main class="section meal-plan-section">
+    <h2>Click on one of the days to get your meal plan for that day</h2>
+    <div class="button-container">
+        <button id="prev-week">Previous Week</button>
+        <button id="next-week">Next Week</button>
+    </div>
+    <div class="calendar-container" id="calendar-container">
+        <!-- Calendar will be dynamically populated -->
+    </div>
+  
+</main>
+<!-- Add the Daily Meal Plan Section Here -->
+<main class="section daily-meal-plan-section" style="display: none;">
+    <div id="loading-spinner" style="display: none;">
+        <img src="spinner.gif" alt="Loading..." style="width: 50px; height: 50px;">
+    </div>    
+    
+    <h2 id="daily-meal-plan-title">Meal Plan: Sunday 10/1</h2>
+    <div class="meal-plan-container">
+        <!-- Meals will be dynamically populated here -->
+    </div>
+    <div class="feedback-section">
+        <h3>Feedback:</h3>
+        <label for="breakfast-feedback">Breakfast:</label>
+        <input type="text" id="breakfast-feedback" placeholder="Feedback for breakfast...">
+        <label for="lunch-feedback">Lunch:</label>
+        <input type="text" id="lunch-feedback" placeholder="Feedback for lunch...">
+        <label for="dinner-feedback">Dinner:</label>
+        <input type="text" id="dinner-feedback" placeholder="Feedback for dinner...">
+    </div>
+   
+<!--recipe page-->
+    <div class="recipe-page" id="recipe-page">
+        <h2 id="recipe-title">Recipe Title</h2>
+        <img id="recipe-image" src="default-meal.png" alt="Meal Image" style="width: 100%; max-height: 300px; object-fit: cover;">
+        <h3>Ingredients</h3>
+        <ul id="recipe-ingredients"></ul>
+        <h3>Instructions</h3>
+        <ol id="recipe-instructions"></ol>
+        <h3>Q&A Section</h3>
+        <div class="qa-section">
+            <input id="qa-input" type="text" placeholder="Ask a question about this recipe...">
+            <button onclick="askQuestion()">Submit Question</button>
+            <div id="qa-response"></div>
+        </div>
+        <button onclick="goBack()">Back to Meal Plan</button>
+    </div>
+    <div id="regenerate-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); z-index: 1000;">
+        <h3>Regenerate Meal</h3>
+        <label for="meal-mood">What are you in the mood for?</label>
+        <input type="text" id="meal-mood" placeholder="e.g., light, savory" style="margin-bottom: 10px; width: 100%; padding: 8px;">
+        
+        <label for="meal-spice">Spice Level (1–5):</label>
+        <input type="number" id="meal-spice" min="1" max="5" placeholder="3" style="margin-bottom: 20px; width: 100%; padding: 8px;">
+        
+        <div style="text-align: right;">
+            <button onclick="regenerateMeal()">Generate</button>
+            <button onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+    
+
+<script>
+ 
+ const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+
+let weekStartDate = null; // Declare globally for accessibility
+
+let weekOffset = 0; // Declare this at the top of your script
+
+document.addEventListener("DOMContentLoaded", () => {
+    const calendarContainer = document.getElementById('calendar-container');
+    if (!calendarContainer) {
+        console.error("calendar-container is missing from the DOM!");
+    } else {
+        console.log("calendar-container found!");
+    }
+});
+
+const exclusions = {
+    vegan: ["Red Meat", "Beef", "Pork/Bacon", "Lamb", "Veal", "Poultry", "Chicken", "Turkey", "Fish", "Salmon", "Tuna", "Tilapia", "Sardines","Trout & Snapper", "Shellfish", "Eggs", "Mayo", "Honey", "Non - Kosher Meats"],
+    vegetarian: ["Red Meat", "Beef", "Pork/Bacon", "Lamb", "Veal", "Poultry", "Chicken", "Turkey", "Fish", "Salmon", "Tuna", "Tilapia", "Sardines","Trout & Snapper", "Shellfish" ,"Non - Kosher Meats"],
+    kosher: ["Pork", "Shellfish", "Non - Kosher Meats"],
+    "dairy-free": ["Dairy", "Milk", "Cream", "Cheese", "Yogurt", "Cottage Cheese", "Whey Powder"],
+    "nut-free": ["Fats & Nuts", "Avocado", "Peanuts", "Almonds", "Pecans", "Walnuts", "Tree Nuts"]
+};
+
+const exclusionCategories = {
+    
+    "Common Exclusions": ["Gluten", "Peanuts", "Eggs", "Fish", "Tree Nuts", "Dairy", "Soy", "Shellfish", "Sesame"],
+    Dairy: ["Dairy", "Milk", "Cream", "Cheese", "Yogurt", "Cottage Cheese", "Whey Powder"],
+    Eggs: ["Eggs"],
+    Grains: ["Grains", "Breakfast Cereals", "Pastas", "Breads", "Rice", "Oatmeal", "Sugar"],
+    Soy: ["Soy", "Tofu", "Soy Milk"],
+    "Red Meat": ["Red Meat", "Beef", "Pork/Bacon", "Lamb", "Veal"], 
+    Poultry: ["Poultry", "Chicken", "Turkey"],
+    Fish: ["Fish", "Salmon", "Tuna", "Tilapia", "Sardines","Trout & Snapper"],
+    Shellfish: ["Shellfish"],
+    Mayo: ["Mayo"],
+    "Fats & Nuts": ["Fats & Nuts", "Avocado", "Peanuts", "Almonds", "Pecans", "Walnuts"],
+    "Tree Nuts": ["Tree Nuts"], 
+    Legumes: ["Legumes", "Peas", "Lentils", "Beans"],
+    Fruits: ["Fruits", "Apples", "Bananas", "Grapes", "Oranges", "Strawberries", "Pineapple", "Blueberries", "Fruit Juice"],
+    Vegetables: ["Vegetables", "Artichoke", "Asparagus", "Beets", "Brocolli", "Carrots", "Sprouts", "Celery", "Peppers", "Tomatoes", "Onion", "Garlic", "Eggplant"],
+    "Starchy Vegetables": ["Starchy Vegetables", "Corn", "Potatoes & Yam"],
+    Honey: ["Honey"],
+    "Non - Kosher Meats": ["Non - Kosher Meats"],
+
+  
+};
+       
+    function getUserPreferences() {
+    // Collect exclusions
+    const exclusions = Array.from(document.querySelectorAll(".exclusion-item.selected")).map((item) => item.textContent);
+
+    // Collect taste preferences
+    const spiceTolerance = document.querySelector(".spice-options span.selected")?.textContent || "3"; // Default to medium
+    const preferredCuisines = document.getElementById("cuisines").value.split(",").map((c) => c.trim());
+    const favoriteFood = document.getElementById("favoriteFood").value;
+
+    // Collect general info
+    const gender = document.querySelector(".gender-options span.selected")?.textContent || "Not specified";
+    const age = document.getElementById("age").value || "Unknown";
+    const height = document.getElementById("height").value || "Unknown";
+    const weight = document.getElementById("weight").value || "Unknown";
+
+    return {
+        exclusions,
+        spiceTolerance: parseInt(spiceTolerance, 10),
+        preferredCuisines,
+        favoriteFood,
+        generalInfo: { gender, age, height, weight },
+    };
+}
+
+   
+function showSection(section) {
+    document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+    document.querySelector(`.${section}`).style.display = 'block';
+}
+
+function goToMealPlan() {
+    showSection('meal-plan-section');
+    populateCalendar(); // Populate the calendar when navigating to the meal plan page
+}
+
+// Ensure DOM is fully loaded before running JavaScript
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOMContentLoaded triggered");
+    populateCalendar();
+});
+
+
+
+function populateCalendar() {
+    console.log("populateCalendar called");
+
+    const calendarContainer = document.getElementById('calendar-container');
+    if (!calendarContainer) {
+        console.error("calendar-container not found in DOM");
+        return;
+    }
+
+    // Clear existing content
+    calendarContainer.innerHTML = '';
+
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const today = new Date();
+
+    // Calculate start of the week
+    weekStartDate = new Date(today); // Assign the global variable
+    weekStartDate.setDate(today.getDate() - today.getDay() + weekOffset * 7);
+
+    console.log("startOfWeek (weekStartDate):", weekStartDate);
+
+    // Render days of the week
+    for (let i = 0; i < 7; i++) {
+        const dayDate = new Date(weekStartDate);
+        dayDate.setDate(weekStartDate.getDate() + i);
+
+        const dateFormatted = `${days[i]}<br>${dayDate.getMonth() + 1}/${dayDate.getDate()}`;
+        console.log("Rendering day:", dateFormatted);
+
+        const dayDiv = document.createElement('div');
+        dayDiv.classList.add('day');
+        dayDiv.innerHTML = `
+            <p>${dateFormatted}</p>
+            <img src="${days[i].toLowerCase()}.png" alt="${days[i]}" />
+        `;
+
+        // Add click event
+        dayDiv.addEventListener('click', () => {
+            const selectedDate = `${days[i]} ${dayDate.getMonth() + 1}/${dayDate.getDate()}`;
+            handleDateClick(selectedDate);
+        });
+
+        calendarContainer.appendChild(dayDiv);
+    }
+
+    console.log("Calendar populated successfully");
+}
+
+// Ensure DOM is loaded before populating the calendar
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOMContentLoaded triggered");
+    populateCalendar();
+});
+
+// Handle navigation buttons
+
+document.getElementById('next-week').addEventListener('click', () => {
+    weekOffset++; // Move to next week
+    populateCalendar(); // Re-render
+});
+
+document.getElementById('prev-week').addEventListener('click', () => {
+    weekOffset--; // Move to previous week
+    populateCalendar(); // Re-render
+});
+
+function selectDiet(diet) {
+    console.log("Diet selected:", diet);
+
+    // Show the Exclusion Section
+    showSection("exclusion-section");
+
+    // Get the container for exclusions
+    const exclusionContent = document.getElementById("exclusion-content");
+    exclusionContent.innerHTML = ""; // Clear any existing content
+
+    // Populate exclusions
+    if (exclusionCategories) {
+        for (const category in exclusionCategories) {
+            const categoryDiv = document.createElement("div");
+            categoryDiv.className = "exclusion-category";
+
+            const title = document.createElement("h3");
+            title.textContent = category;
+            categoryDiv.appendChild(title);
+
+            const list = document.createElement("div");
+            list.className = "exclusion-list";
+
+            exclusionCategories[category].forEach((item) => {
+                const itemDiv = document.createElement("div");
+                itemDiv.textContent = item;
+                itemDiv.className = "exclusion-item";
+
+                // Highlight preselected exclusions
+                if (exclusions[diet]?.includes(item)) {
+                    itemDiv.classList.add("selected");
+                }
+
+                // Toggle selection
+                itemDiv.onclick = () => itemDiv.classList.toggle("selected");
+                list.appendChild(itemDiv);
+            });
+
+            categoryDiv.appendChild(list);
+            exclusionContent.appendChild(categoryDiv);
+        }
+    } else {
+        console.error("Exclusion categories are not defined.");
+    }
+
+    // Ensure the "Next" button is visible
+    const buttonContainer = document.querySelector(".button-container");
+    if (buttonContainer) {
+        buttonContainer.style.display = "block"; // Make buttons visible
+    }
+}
+
+const buttonContainer = document.querySelector(".button-container");
+console.log("Button container visibility before:", buttonContainer.style.display);
+
+// Force visibility for debugging
+buttonContainer.style.display = "block";
+
+console.log("Button container visibility after:", buttonContainer.style.display);
+
+
+
+
+        function goToGeneralInfo() {
+            showSection('general-info-section');
+        }
+
+        function goToTastePreferences() {
+            showSection('taste-section');
+        }
+
+        function selectOption(element, group) {
+            document.querySelectorAll(`.${group}-options span`).forEach(span => span.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function finishSurvey() {
+            alert("Survey Completed! Thank you!");
+        }
+        // New Functions for Daily Meal Plan
+  
+
+
+        async function handleDateClick(date) {
+    console.log(`Selected date: ${date}`);
+    console.log(`Week starts on: ${weekStartDate}`); // Use the global `weekStartDate`
+
+    const dailyMealPlanSection = document.querySelector(".daily-meal-plan-section");
+    const dailyMealPlanTitle = document.getElementById("daily-meal-plan-title");
+    const mealPlanContainer = document.querySelector(".meal-plan-container");
+    const loadingSpinner = document.getElementById("loading-spinner");
+
+    // Show the spinner
+    if (loadingSpinner) loadingSpinner.style.display = "block";
+
+    // Update the title with the selected date
+    dailyMealPlanTitle.innerText = `Meal Plan: ${date}`;
+
+    let meals = null; // Declare meals variable at the top
+
+    try {
+        // Fetch current user preferences
+        const userPreferences = getUserPreferences();
+        console.log("User Preferences:", userPreferences);
+
+        // Clear any cached meal plan and preferences for this date
+        localStorage.removeItem(`mealPlan-${date}`);
+        localStorage.removeItem(`mealPlanPrefs-${date}`);
+        console.log(`Cleared cache for date: ${date}`);
+
+        // Generate a new meal plan
+        meals = await generateMealPlan(date, userPreferences);
+
+        // Clear the container and populate the meal plan
+        mealPlanContainer.innerHTML = "";
+        if (!meals || meals.length === 0) {
+            console.warn(`No meal plan available for date: ${date}`);
+            mealPlanContainer.innerHTML = "<p>No meal plan available for this date. Please try again later.</p>";
+            return;
+        }
+
+        meals.forEach((meal) => {
+            const mealDiv = document.createElement("div");
+            mealDiv.classList.add("meal");
+            mealDiv.innerHTML = `
+                <img src="${meal.image || 'default-meal.png'}" alt="${meal.name}" style="width: 150px; height: 150px;" loading="lazy">
+                <p><strong>${meal.type}:</strong> ${meal.name}</p>
+                <p>${meal.description}</p>
+                <label>Did you eat it?</label>
+                <input type="checkbox">
+                <label>Liked</label>
+                <input type="radio" name="${meal.type}" value="liked">
+                <label>Didn't Like</label>
+                <input type="radio" name="${meal.type}" value="not-liked">
+                <button onclick="showRecipe('${meal.name}')">Show Recipe</button>
+                <button onclick="openRegenerateModal('${meal.type}')">Regenerate Meal</button>
+            `;
+            mealPlanContainer.appendChild(mealDiv);
+        });
+
+    } catch (error) {
+        console.error("Error handling date click:", error);
+        mealPlanContainer.innerHTML = "<p>Failed to load meal plan. Please try again later.</p>";
+    } finally {
+        if (loadingSpinner) loadingSpinner.style.display = "none";
+        showSection("daily-meal-plan-section");
+    }
+}
+
+
+async function generateMealPlan(date, userPreferences) {
+    const today = new Date();
+    const weekStartDate = new Date(today);
+    weekStartDate.setDate(today.getDate() - today.getDay());
+
+    const prompt = `Generate meal plans for the week starting ${weekStartDate.toDateString()}.
+    
+    You are a meal plan generator. 
+    Use these preferences:
+    - Spice tolerance: ${userPreferences.spiceTolerance}
+    - Preferred cuisines: ${userPreferences.preferredCuisines.join(", ")}
+    - Dietary restrictions: ${userPreferences.exclusions.join(", ")} (strictly avoid these items and all their derivatives, such as sauces, extracts, or garnishes).
+    - Favorite food: ${userPreferences.favoriteFood}
+    - User info: Gender: ${userPreferences.generalInfo.gender}, Age: ${userPreferences.generalInfo.age}, Height: ${userPreferences.generalInfo.height}, Weight: ${userPreferences.generalInfo.weight}.
+    
+    IMPORTANT INSTRUCTIONS:
+    1. STRICTLY exclude all dietary restrictions, including derivatives (e.g., "orange" excludes "orange sauce," "orange zest").
+    2. Provide exactly 3 unique meals (Breakfast, Lunch, Dinner) with varied ingredients that align with the preferences and restrictions provided.
+    3. Meals should be different from previous days to keep the user from getting bored, but must remain within their taste preferences.
+    4. Ensure the meals are nutritionally balanced and suitable for the user's age, gender, and weight.
+    5. Meals must feel personalized and include culturally or taste-appropriate options based on the preferred cuisines.
+    Each meal in the JSON array must include:
+    - "type": The type of meal (e.g., Breakfast, Lunch, Dinner)
+    - "name": The name of the meal
+    - "description": A short description of the meal
+
+       IMPORTANT:
+    1. Exclude restricted items, including derivatives (e.g., "orange" excludes "orange sauce").
+   
+    `;
+    
+    
+    let mealPlan = []; // Change from const to let
+
+    try {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${openAIKey}`,
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo",
+                messages: [
+                    { role: "system", content: "You are a helpful assistant that generates meal plans." },
+                    { role: "user", content: prompt },
+                ],
+                max_tokens: 300,
+                temperature: 0.5,
+            }),
+        });
+
+
+         if (response.status === 429) {
+            console.warn("Rate limit exceeded.");
+        }
+
+        const data = await response.json();
+        if (!data.choices || !data.choices[0]?.message?.content) {
+            throw new Error("Invalid API response format. Missing choices or message content.");
+        }
+
+        // Log the raw response for debugging
+        console.log("Raw API response:", data);
+
+        if (!data.choices || !data.choices[0]?.message?.content) {
+            throw new Error("Invalid API response format. Missing choices or message content.");
+        }
+
+        // Clean up the API response
+        const rawContent = data.choices[0].message.content.trim();
+        const cleanedContent = rawContent
+            .replace(/```json/g, "")
+            .replace(/```/g, "")
+            .trim();
+
+        console.log("Cleaned API response:", cleanedContent);
+
+        // Parse the cleaned JSON
+        const parsedResponse = JSON.parse(cleanedContent);
+mealPlan = parsedResponse.meal_plan || parsedResponse;
+
+
+        // Check for the "meal_plan" key
+
+        if (!Array.isArray(mealPlan) || mealPlan.length !== 3) {
+            throw new Error("Invalid meal plan format. Expected an array with exactly 3 meals.");
+        }
+mealPlan = JSON.parse(cleanedContent);
+
+        // Add hardcoded images for meal types
+        mealPlan.forEach((meal) => {
+            if (meal.type === "Breakfast") {
+                meal.image = "breakfast.png";
+            } else if (meal.type === "Lunch") {
+                meal.image = "lunch.png";
+            } else if (meal.type === "Dinner") {
+                meal.image = "dinner.png";
+            } else {
+                console.warn(`Unknown meal type: ${meal.type}`);
+            }
+        });
+
+        // Cache the meal plan in localStorage
+        localStorage.setItem(`mealPlan-${date}`, JSON.stringify(mealPlan));
+
+        console.log("Meal plan generated successfully:", mealPlan);
+
+        return mealPlan;
+    } catch (error) {
+        console.error("Error generating meal plan:", error.message, error);
+
+        // Return an empty array as fallback
+        return [];
+    }
+}
+
+const cachedMealPlan = localStorage.getItem(`${weekStartDate}`);
+console.log("Cached Meal Plan Retrieved:", cachedMealPlan);
+
+// Show the recipe page
+async function showRecipe(mealName) {
+        const recipePage = document.getElementById('recipe-page');
+        recipePage.style.display = 'block';
+
+        // Fetch recipe details and image
+        const recipeData = await fetchRecipe(mealName);
+        populateRecipePage(recipeData);
+    }
+
+    // Fetch recipe details using OpenAI
+    async function fetchRecipe(mealName) {
+        const prompt = `Generate a detailed recipe for "${mealName}". Include:
+          <Task>
+            Generate a detailed recipe for "${mealName}"
+        </Task>
+
+        <Instructions>
+        While generating the recipe, please ensure the following sections are included:
+
+        1. Ingredients List: Provide a comprehensive list of ingredients, specifying their quantity.
+        2. Step-by-step Cooking Instructions: Offer clear, easy-to-follow instructions, organized in a logical sequence.
+        3. Nutritional Value: Include a breakdown of the meal's nutritional value, focusing on a balanced diet with details such as calories, protein, fat, etc.
+        </Instructions>
+        <Output Format>
+        **Strictly follow the format below for the recipe:**
+        **Recipe Name: Recipe Title**
+
+        **Ingredients:**
+
+            Ingredient 1: [Quantity]
+            Ingredient 2: [Quantity]
+            Ingredient 3: [Quantity]
+            [Continue listing all ingredients with specific quantities]
+
+        **Nutritional Value (per serving):**
+
+            Calories: [Number] kcal
+            Protein: [Amount] g
+            Fat: [Amount] g
+            Carbohydrates: [Amount] g
+            Fiber: [Amount] g
+            Sugar: [Amount] g
+            Sodium: [Amount] mg
+            Other key nutrients (if applicable)
+
+        **Instructions:**
+
+        Step 1: [Detailed instruction]
+        Step 2: [Detailed instruction]
+        Step 3: [Detailed instruction]
+        Step 4: [Continue with further steps, ensuring clarity and thoroughness in each]
+        [Continue listing instructions, providing as much detail as needed for the cooking process.]
+
+        </Output Format>
+        `
+        try {
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${openAIKey}`,
+                },
+                body: JSON.stringify({
+                    model: "gpt-3.5-turbo",
+                    messages: [{ role: "user", content: prompt }],
+                    max_tokens: 500,
+                }),
+            });
+
+            const data = await response.json();
+            const recipeText = data.choices[0]?.message?.content || "Recipe not found.";
+            return parseRecipe(recipeText);
+        } catch (error) {
+            console.error("Error fetching recipe:", error);
+            alert("Unable to fetch recipe. Please try again.");
+        }
+    }
+
+    // Parse recipe data
+    function parseRecipe(recipeText) {
+        const lines = recipeText.split("\n");
+        const recipe = { name: "", ingredients: [], instructions: [] };
+        let section = "";
+
+        lines.forEach(line => {
+            if (line.toLowerCase().includes("ingredients")) section = "ingredients";
+            else if (line.toLowerCase().includes("instructions")) section = "instructions";
+            else if (section === "ingredients") recipe.ingredients.push(line.trim());
+            else if (section === "instructions") recipe.instructions.push(line.trim());
+            else if (!recipe.name) recipe.name = line.trim();
+        });
+
+        return recipe;
+    }
+
+    // Populate the recipe page
+    async function populateRecipePage(recipe) {
+        document.getElementById("recipe-title").innerText = recipe.name;
+        document.getElementById("recipe-ingredients").innerHTML = recipe.ingredients.map(ing => `<li>${ing}</li>`).join("");
+        document.getElementById("recipe-instructions").innerHTML = recipe.instructions.map(ins => `<li>${ins}</li>`).join("");
+
+        // Fetch image from DALL-E
+        const imageURL = await fetchImage(recipe.name);
+        document.getElementById("recipe-image").src = imageURL;
+    }
+
+    // Fetch meal image using DALL-E
+    async function fetchImage(mealName) {
+        try {
+            const response = await fetch("https://api.openai.com/v1/images/generations", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${openAIKey}`,
+                },
+                body: JSON.stringify({
+                    prompt: `A beautifully plated dish of ${mealName}.`,
+                    n: 1,
+                    size: "1024x1024",
+                }),
+            });
+
+            const data = await response.json();
+            return data.data[0].url || "default-meal.png";
+        } catch (error) {
+            console.error("Error fetching image:", error);
+            return "default-meal.png"; // Fallback image
+        }
+    }
+
+    // Q&A Section
+    async function askQuestion() {
+        const question = document.getElementById("qa-input").value;
+        const prompt = `Answer the following question about the recipe: "${question}"`;
+
+        try {
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${openAIKey}`,
+                },
+                body: JSON.stringify({
+                    model: "gpt-3.5-turbo",
+                    messages: [{ role: "user", content: prompt }],
+                    max_tokens: 150,
+                }),
+            });
+
+            const data = await response.json();
+            document.getElementById("qa-response").innerText = data.choices[0]?.message?.content || "No response.";
+        } catch (error) {
+            console.error("Error answering question:", error);
+            alert("Unable to answer the question. Please try again.");
+        }
+    }
+
+    // Go back to meal plan
+    function goBack() {
+        document.getElementById('recipe-page').style.display = 'none';
+    }
+
+    let mealTypeToRegenerate = '';
+
+function openRegenerateModal(mealType) {
+    mealTypeToRegenerate = mealType; // Store which meal is being regenerated
+    document.getElementById('regenerate-modal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('regenerate-modal').style.display = 'none';
+    mealTypeToRegenerate = ''; // Clear the meal type
+}
+
+
+async function regenerateMeal() {
+    const mood = document.getElementById('meal-mood').value || "any";
+    const spiceLevel = document.getElementById('meal-spice').value || "3";
+
+    if (!mood) {
+        alert('Please provide a mood or cuisine preference!');
+        return;
+    }
+
+    // Fetch user preferences
+    const userPreferences = getUserPreferences();
+
+    const prompt = `
+        Generate a ${mealTypeToRegenerate} meal based on the following preferences:
+        - Cuisine or Mood: ${mood}
+        - Spice Level: ${spiceLevel}
+        - Dietary Restrictions: ${userPreferences.exclusions.join(", ")}
+        Ensure the meal is culturally relevant to the specified mood or cuisine.
+        Output only JSON in this format:
+        {
+            "type": "${mealTypeToRegenerate}",
+            "name": "",
+            "description": "",
+            "image": ""
+        }
+    `;
+
+    try {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${openAIKey}`,
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo",
+                messages: [{ role: "user", content: prompt }],
+                max_tokens: 500,
+                temperature: 0.7,
+            }),
+        });
+
+        const data = await response.json();
+        const newMeal = JSON.parse(data.choices[0]?.message?.content || "{}");
+
+        if (!newMeal.name || !newMeal.description) {
+            throw new Error("Failed to generate a valid meal.");
+        }
+
+        // Update the UI with the new meal
+        const mealDivs = document.querySelectorAll('.meal');
+        const defaultImages = {
+            Breakfast: "breakfast.png",
+            Lunch: "lunch.png",
+            Dinner: "dinner.png",
+        };
+
+        mealDivs.forEach((mealDiv) => {
+            const strongTag = mealDiv.querySelector('p strong');
+            if (strongTag && strongTag.textContent.includes(mealTypeToRegenerate)) {
+                mealDiv.innerHTML = `
+                    <img src="${newMeal.image || defaultImages[mealTypeToRegenerate]}" alt="${newMeal.name}" style="width: 150px; height: 150px;">
+                    <p><strong>${newMeal.type}:</strong> ${newMeal.name}</p>
+                    <p>${newMeal.description}</p>
+                    <label>Did you eat it?</label>
+                    <input type="checkbox">
+                    <label>Liked</label>
+                    <input type="radio" name="${newMeal.type}" value="liked">
+                    <label>Didn't Like</label>
+                    <input type="radio" name="${newMeal.type}" value="not-liked">
+                    <button onclick="showRecipe('${newMeal.name}')">Show Recipe</button>
+                    <button onclick="openRegenerateModal('${newMeal.type}')">Regenerate Meal</button>
+                `;
+            }
+        });
+
+        // Store the new meal in local storage
+        const dateKey = `mealPlan-${weekStartDate}`;
+        const dailyPlan = JSON.parse(localStorage.getItem(dateKey)) || [];
+        const updatedPlan = dailyPlan.map((meal) =>
+            meal.type === mealTypeToRegenerate ? newMeal : meal
+        );
+        localStorage.setItem(dateKey, JSON.stringify(updatedPlan));
+
+        closeModal();
+    } catch (error) {
+        console.error("Error regenerating meal:", error);
+        alert("Failed to regenerate meal. Please try again.");
+    }
+}
+
+    </script>
+</body>
+</html>
