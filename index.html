@@ -386,8 +386,14 @@
     
 
 <script>
- const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
+const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+
+if (!apiKey) {
+    console.error("API Key is missing or undefined.");
+}
+
+console.log("API Key: ", apiKey); // This will log `undefined` in production for security reasons.
 
 let weekStartDate = null; // Declare globally for accessibility
 
@@ -829,26 +835,26 @@ async function showRecipe(mealName) {
           <Task>
             Generate a detailed recipe for "${mealName}"
         </Task>
-        <Output Format>
+
+        <Instructions>
         While generating the recipe, please ensure the following sections are included:
 
         1. Ingredients List: Provide a comprehensive list of ingredients, specifying their quantity.
         2. Step-by-step Cooking Instructions: Offer clear, easy-to-follow instructions, organized in a logical sequence.
         3. Nutritional Value: Include a breakdown of the meal's nutritional value, focusing on a balanced diet with details such as calories, protein, fat, etc.
-       
-        Strictly follow the format below for the recipe:
-      
-          Recipe Title
-       
-        Ingredients:
+        </Instructions>
+        <Output Format>
+        **Strictly follow the format below for the recipe:**
+        **Recipe Name: Recipe Title**
 
-            -Ingredient 1: [Quantity]
-            -Ingredient 2: [Quantity]
-            -Ingredient 3: [Quantity]
+        **Ingredients:**
+
+            Ingredient 1: [Quantity]
+            Ingredient 2: [Quantity]
+            Ingredient 3: [Quantity]
             [Continue listing all ingredients with specific quantities]
-        
-            Nutritional Value (per serving):
-    
+
+        **Nutritional Value (per serving):**
 
             Calories: [Number] kcal
             Protein: [Amount] g
@@ -858,16 +864,16 @@ async function showRecipe(mealName) {
             Sugar: [Amount] g
             Sodium: [Amount] mg
             Other key nutrients (if applicable)
-        
-            Instructions:
 
-        -Step 1: [Detailed instruction]
-        -Step 2: [Detailed instruction]
-        -Step 3: [Detailed instruction]
-        -Step 4: [Continue with further steps, ensuring clarity and thoroughness in each]
-        
+        **Instructions:**
+
+        Step 1: [Detailed instruction]
+        Step 2: [Detailed instruction]
+        Step 3: [Detailed instruction]
+        Step 4: [Continue with further steps, ensuring clarity and thoroughness in each]
         [Continue listing instructions, providing as much detail as needed for the cooking process.]
-            </Output Format>
+
+        </Output Format>
         `
         try {
             const response = await fetch("https://api.openai.com/v1/chat/completions", {
