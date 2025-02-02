@@ -9,23 +9,25 @@ const OpenAI = require('openai');
 const app = express();
 const port = 3000;
 
-// Set the public path relative to index.js (inside bite-right-backend)
+// ------------------------------
+// 1. Define the Public Folder Path
+// ------------------------------
 const publicPath = path.join(__dirname, 'public');
 console.log(`🛠 DEBUG: Serving static files from: ${publicPath}`);
 
 // ------------------------------
-// 1. Serve Static Files First (from the public folder)
+// 2. Serve Static Files from the Public Folder
 // ------------------------------
 app.use(express.static(publicPath, { etag: false, maxAge: 0 }));
 
 // ------------------------------
-// 2. Middleware for API requests
+// 3. Middleware for API Requests
 // ------------------------------
 app.use(cors());
 app.use(express.json());
 
 // ------------------------------
-// 3. API Endpoints
+// 4. API Endpoints
 // ------------------------------
 
 // Endpoint to generate meal plan
@@ -145,7 +147,7 @@ app.post('/api/openai', async (req, res) => {
 });
 
 // ------------------------------
-// 4. Catch-all GET Route for SPA Navigation
+// 5. Catch-all GET Route for SPA Navigation
 // ------------------------------
 app.get('*', (req, res) => {
   const indexPath = path.join(publicPath, 'index.html');
@@ -159,7 +161,7 @@ app.get('*', (req, res) => {
 });
 
 // ------------------------------
-// 5. Local Server Startup & Export for Vercel
+// 6. Local Server Startup & Export for Vercel
 // ------------------------------
 if (process.env.NODE_ENV !== 'production') {
   app.listen(port, () => {
