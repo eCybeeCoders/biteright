@@ -651,49 +651,52 @@
     // Fetch recipe from your backend/OpenAI
     async function fetchRecipe(mealName) {
       const prompt = `Generate a detailed recipe for "${mealName}". Include:
-      <Task>
-        Generate a detailed recipe for "${mealName}"
-      </Task>
 
-      <Instructions>
-      While generating the recipe, please ensure the following sections are included:
+<Task>
+Generate a structured and well-formatted recipe for "${mealName}" without any unnecessary numbering or additional formatting beyond the specified structure.
+</Task>
 
-      1. Ingredients List: Provide a comprehensive list of ingredients, specifying their quantity.
-      2. Step-by-step Cooking Instructions: Offer clear, easy-to-follow instructions, organized in a logical sequence.
-      3. Nutritional Value: Include a breakdown of the meal's nutritional value, focusing on a balanced diet with details such as calories, protein, fat, etc.
-    
-      <Output Format>
-      **Strictly follow the format below for the recipe do not add any unnecessary numbering:**
-      **Recipe Name: Recipe Title**
+<Instructions>
+Ensure the recipe includes the following sections, strictly following the given format:
 
-      **Ingredients:**
+1. **Ingredients List:** List each ingredient with its quantity. Do **not** include numbers or bullets before each ingredient.
+2. **Step-by-Step Cooking Instructions:** Write each step clearly but **do not** auto-number the steps. Each step should be a full sentence, starting on a new line.
+3. **Nutritional Information:** Provide a basic nutritional breakdown of the dish without numbering.
 
-          Ingredient 1: [Quantity]
-          Ingredient 2: [Quantity]
-          Ingredient 3: [Quantity]
-          [Continue listing all ingredients with specific quantities]
+<Output Format>
+**Strictly follow the format below. Do not add any additional numbering, bullet points, or unexpected characters:**
 
-      **Nutritional Value (per serving):**
+**Recipe Name: Recipe Title**
 
-          Calories: [Number] kcal
-          Protein: [Amount] g
-          Fat: [Amount] g
-          Carbohydrates: [Amount] g
-          Fiber: [Amount] g
-          Sugar: [Amount] g
-          Sodium: [Amount] mg
-          Other key nutrients (if applicable)
+**Ingredients:**
+Ingredient 1: [Quantity]  
+Ingredient 2: [Quantity]  
+Ingredient 3: [Quantity]  
+[Continue listing ingredients]
 
-      **Cooking Instructions:**
+**Nutritional Value (per serving):**
+Calories: [Number] kcal  
+Protein: [Amount] g  
+Fat: [Amount] g  
+Carbohydrates: [Amount] g  
+Fiber: [Amount] g  
+Sugar: [Amount] g  
+Sodium: [Amount] mg  
+Other key nutrients (if applicable)
 
-      Step 1: [Detailed instruction]
-      Step 2: [Detailed instruction]
-      Step 3: [Detailed instruction]
-      Step 4: [Continue with further steps, ensuring clarity and thoroughness in each]
-      [Continue listing instructions, providing as much detail as needed for the cooking process.]
+**Cooking Instructions:**
+Start each instruction clearly without numbering or bullets. Write step-by-step directions in full sentences, using a new line for each step.
 
-      </Output Format>
-      
+Example:  
+Preheat the oven to 350°F.  
+Chop the onions and sauté them in a pan until golden brown.  
+Add tomatoes and spices, stirring well for 5 minutes.  
+Continue cooking for another 10 minutes, stirring occasionally.  
+
+[Ensure all instructions follow this structure without added numbering or formatting inconsistencies.]
+
+</Output Format>
+
 
       `;
       try {
