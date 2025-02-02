@@ -3,7 +3,7 @@ console.log("OPENAI_API_KEY:", process.env.OPENAI_API_KEY);
 
 const express = require('express');
 const cors = require('cors');
-const path = require('path');         // Require the path module
+const path = require('path'); // For building paths
 const OpenAI = require('openai');
 
 const app = express();
@@ -13,27 +13,27 @@ const port = 3000;
 const frontendPath = path.join(__dirname, '..');
 console.log(`🛠 DEBUG: Serving frontend from: ${frontendPath}`);
 
-// Serve static files from the frontend directory
+// Serve static files from the parent folder (your frontend)
 app.use(express.static(frontendPath));
 
 // Serve index.html for all routes
 app.get('*', (req, res) => {
-    const indexPath = path.join(frontendPath, 'index.html');  // Build the full path to index.html
-    console.log(`🛠 DEBUG: Attempting to serve ${indexPath}`);
+  const indexPath = path.join(frontendPath, 'index.html');
+  console.log(`🛠 DEBUG: Attempting to serve ${indexPath}`);
 
-    res.sendFile(indexPath, (err) => {
-        if (err) {
-            console.error("❌ Error serving index.html:", err);
-            res.status(500).send("Error loading the site.");
-        }
-    });
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      console.error("❌ Error serving index.html:", err);
+      res.status(500).send("Error loading the site.");
+    }
+  });
 });
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Initialize the OpenAI class (4.x)
+// Initialize the OpenAI class
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -45,8 +45,7 @@ app.post('/api/generate-meal-plan', async (req, res) => {
     console.log('Generating meal plan for:', date);
     console.log('User Preferences:', preferences);
 
-    // Construct your prompt (use 'preferences' not 'userPreferences')
-    const weekStartDate = new Date(); // Or parse from `date` if you want
+    const weekStartDate = new Date(); // Or parse from `date` if desired
     const prompt = `
 Generate meal plans for the week starting ${weekStartDate.toDateString()}.
 
@@ -72,7 +71,6 @@ IMPORTANT INSTRUCTIONS:
 ]
 `;
 
-    // Call the chat-based method
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
@@ -83,11 +81,9 @@ IMPORTANT INSTRUCTIONS:
       temperature: 0.7,
     });
 
-    // Extract text from the chat response
     const rawContent = response.choices[0]?.message?.content.trim() || '';
     console.log('Raw GPT Content:', rawContent);
 
-    // Remove any code fences
     const cleanedContent = rawContent
       .replace(/```json/gi, '')
       .replace(/```/g, '')
@@ -100,7 +96,6 @@ IMPORTANT INSTRUCTIONS:
       console.warn('Meal plan not in pure JSON format:', err);
     }
 
-    // Fallback if mealPlan is invalid or empty
     if (!Array.isArray(mealPlan) || mealPlan.length < 3) {
       console.warn('Received invalid or empty meal plan. Using fallback.');
       mealPlan = [
@@ -122,7 +117,6 @@ IMPORTANT INSTRUCTIONS:
       ];
     }
 
-    // Return to the frontend
     res.status(200).json({ mealPlan });
   } catch (error) {
     console.error('Error in /api/generate-meal-plan:', error.message);
@@ -137,8 +131,6 @@ IMPORTANT INSTRUCTIONS:
 app.post('/api/openai', async (req, res) => {
   try {
     const { prompt, imageGeneration, n = 1, size = '1024x1024' } = req.body;
-
-    // If it's an image generation request:
     if (imageGeneration) {
       const imageResp = await openai.images.generate({
         prompt,
@@ -148,7 +140,6 @@ app.post('/api/openai', async (req, res) => {
       return res.status(200).json(imageResp.data);
     }
 
-    // Otherwise, text-based request
     const completion = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
@@ -163,7 +154,12 @@ app.post('/api/openai', async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+// For local development, start the server if not in production
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+  });
+}
+
+// Export the Express app for Vercel
+module.exports = app;
