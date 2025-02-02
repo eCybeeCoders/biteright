@@ -9,19 +9,17 @@ const OpenAI = require('openai');
 const app = express();
 const port = 3000;
 
-// Set the frontend path relative to this file (go up one directory)
-const frontendPath = path.join(__dirname, '..');
-console.log(`🛠 DEBUG: Serving frontend from: ${frontendPath}`);
-
-// **Move static middleware to the very top**
-app.use(express.static(frontendPath));
-
-// Middleware for CORS and JSON parsing
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// Initialize the OpenAI class
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 // ------------------------------
-// API Endpoints
+// API Endpoints (defined first)
 // ------------------------------
 
 // Endpoint to generate meal plan
@@ -141,8 +139,17 @@ app.post('/api/openai', async (req, res) => {
 });
 
 // ------------------------------
-// Catch-all route: serve index.html for SPA routing
+// Static files and frontend
 // ------------------------------
+
+// Set the frontend path (parent folder of bite-right-backend)
+const frontendPath = path.join(__dirname, '..');
+console.log(`🛠 DEBUG: Serving frontend from: ${frontendPath}`);
+
+// Serve static files from the frontend directory
+app.use(express.static(frontendPath));
+
+// Catch-all GET route: serve index.html (for client-side routing)
 app.get('*', (req, res) => {
   const indexPath = path.join(frontendPath, 'index.html');
   console.log(`🛠 DEBUG: Attempting to serve ${indexPath}`);
