@@ -650,21 +650,19 @@
 
     // Fetch recipe from your backend/OpenAI
     async function fetchRecipe(mealName) {
-      const prompt = `Generate a detailed recipe for "${mealName}". Include:
+      const prompt = `Generate a detailed recipe for "${mealName}". Ensure the following:
 
 <Task>
-Generate a structured and well-formatted recipe for "${mealName}" without any unnecessary numbering or additional formatting beyond the specified structure.
+Create a clean, well-structured recipe for "${mealName}" with the following sections:
+1. Ingredients List
+2. Cooking Instructions
+3. Nutritional Value
+
+**Avoid adding any automatic numbering, bullets, or special formatting (e.g., 1., 2., or •) to any section. Write all content in plain text without lists unless explicitly required.**
 </Task>
 
-<Instructions>
-Ensure the recipe includes the following sections, strictly following the given format:
-
-1. **Ingredients List:** List each ingredient with its quantity. Do **not** include numbers or bullets before each ingredient.
-2. **Step-by-Step Cooking Instructions:** Write each step clearly but **do not** auto-number the steps. Each step should be a full sentence, starting on a new line.
-3. **Nutritional Information:** Provide a basic nutritional breakdown of the dish without numbering.
-
-<Output Format>
-**Strictly follow the format below. Do not add any additional numbering, bullet points, or unexpected characters:**
+<Output Instructions>
+Follow this format **exactly**:
 
 **Recipe Name: Recipe Title**
 
@@ -672,7 +670,13 @@ Ensure the recipe includes the following sections, strictly following the given 
 Ingredient 1: [Quantity]  
 Ingredient 2: [Quantity]  
 Ingredient 3: [Quantity]  
-[Continue listing ingredients]
+[Continue listing all ingredients in plain text]
+
+**Cooking Instructions:**
+Write each instruction in full sentences, separated by line breaks. Do not use numbers, bullets, or extra formatting. Example:  
+Preheat the oven to 350°F.  
+Chop the onions and sauté them in a pan until golden brown.  
+Add the tomatoes and spices, stirring well for 5 minutes.  
 
 **Nutritional Value (per serving):**
 Calories: [Number] kcal  
@@ -682,23 +686,26 @@ Carbohydrates: [Amount] g
 Fiber: [Amount] g  
 Sugar: [Amount] g  
 Sodium: [Amount] mg  
-Other key nutrients (if applicable)
 
-**Cooking Instructions:**
-Start each instruction clearly without numbering or bullets. Write step-by-step directions in full sentences, using a new line for each step.
+[Ensure each section adheres to this plain-text format.]
 
-Example:  
-Preheat the oven to 350°F.  
-Chop the onions and sauté them in a pan until golden brown.  
-Add tomatoes and spices, stirring well for 5 minutes.  
-Continue cooking for another 10 minutes, stirring occasionally.  
+</Output Instructions>
 
-[Ensure all instructions follow this structure without added numbering or formatting inconsistencies.]
+<Output Format>
+**Recipe Name: Recipe Title**
 
+**Ingredients:**  
+Ingredient 1: [Quantity]  
+Ingredient 2: [Quantity]  
+Ingredient 3: [Quantity]
+
+**Cooking Instructions:**  
+[Step-by-step instructions with clear, detailed sentences on separate lines.]
+
+**Nutritional Value (per serving):**  
+[Breakdown of key nutritional elements, written without unnecessary formatting.]
 </Output Format>
-
-
-      `;
+`;
       try {
         const response = await fetch("/api/openai", {
           method: "POST",
