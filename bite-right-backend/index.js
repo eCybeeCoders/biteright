@@ -4,7 +4,12 @@ console.log("OPENAI_API_KEY:", process.env.OPENAI_API_KEY);
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const OpenAI = require('openai');
+const OpenAI = require('openai');  // Ensure this is imported
+
+// Create an instance of OpenAI and ensure it is defined.
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const app = express();
 const port = 3000;
@@ -16,7 +21,7 @@ const publicPath = path.join(__dirname, 'public');
 console.log(`🛠 DEBUG: Serving static files from: ${publicPath}`);
 
 // ------------------------------
-// 2. Serve Static Files from Public Folder
+// 2. Serve Static Files from the Public Folder
 // ------------------------------
 app.use(express.static(publicPath, { etag: false, maxAge: 0 }));
 
@@ -63,6 +68,7 @@ IMPORTANT INSTRUCTIONS:
 ]
 `;
 
+    // Use the openai instance we created above.
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
