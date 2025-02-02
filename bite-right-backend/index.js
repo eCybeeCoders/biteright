@@ -9,17 +9,22 @@ const OpenAI = require('openai');
 const app = express();
 const port = 3000;
 
-// Set the frontend path: assuming your project structure is:
-// biteright/           <-- Project root
-// ├── index.html       <-- Frontend entry point (and images should reside here or in a subfolder)
-// └── bite-right-backend/ <-- Backend folder (this file resides here)
+// Determine the frontend path (parent folder of bite-right-backend)
+// Your folder structure should be:
+// biteright/           <-- Project root (contains index.html, images, etc.)
+// ├── index.html
+// ├── vegan.png         (and other images)
+// └── bite-right-backend/
+//     ├── index.js      <-- This file
+//     ├── package.json
+//     └── ...
 const frontendPath = path.join(__dirname, '..');
 console.log(`🛠 DEBUG: Serving frontend from: ${frontendPath}`);
 
 // ------------------------------
 // 1. Serve Static Files First
 // ------------------------------
-// This middleware will serve any static file (images, CSS, etc.) that exists in the frontend folder.
+// This middleware will serve any static file (like images, CSS, etc.) that exists in the frontend folder.
 app.use(express.static(frontendPath));
 
 // ------------------------------
@@ -29,7 +34,7 @@ app.use(cors());
 app.use(express.json());
 
 // ------------------------------
-// 3. API Endpoints (for POST requests)
+// 3. API Endpoints
 // ------------------------------
 
 // Endpoint to generate meal plan
@@ -151,7 +156,7 @@ app.post('/api/openai', async (req, res) => {
 // ------------------------------
 // 4. Catch-all GET Route for SPA Navigation
 // ------------------------------
-// This route should only catch requests that did not match a static file.
+// This catches any request not already handled (after static files are served)
 app.get('*', (req, res) => {
   const indexPath = path.join(frontendPath, 'index.html');
   console.log(`🛠 DEBUG: Serving index.html for route ${req.url}`);
