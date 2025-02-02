@@ -9,17 +9,27 @@ const OpenAI = require('openai');
 const app = express();
 const port = 3000;
 
-// Middleware
+// Set the frontend path: assuming your project structure is:
+// biteright/           <-- Project root
+// ├── index.html       <-- Frontend entry point (and images should reside here or in a subfolder)
+// └── bite-right-backend/ <-- Backend folder (this file resides here)
+const frontendPath = path.join(__dirname, '..');
+console.log(`🛠 DEBUG: Serving frontend from: ${frontendPath}`);
+
+// ------------------------------
+// 1. Serve Static Files First
+// ------------------------------
+// This middleware will serve any static file (images, CSS, etc.) that exists in the frontend folder.
+app.use(express.static(frontendPath));
+
+// ------------------------------
+// 2. Middleware for API requests
+// ------------------------------
 app.use(cors());
 app.use(express.json());
 
-// Initialize the OpenAI class
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 // ------------------------------
-// API Endpoints (defined first)
+// 3. API Endpoints (for POST requests)
 // ------------------------------
 
 // Endpoint to generate meal plan
@@ -43,7 +53,7 @@ Use these preferences:
 
 IMPORTANT INSTRUCTIONS:
 1. STRICTLY exclude all dietary restrictions, including derivatives.
-2. Provide exactly 3 unique meals (Breakfast, Lunch, Dinner) with varied ingredients that align with the preferences and restrictions provided.
+2. Provide exactly 3 unique meals (Breakfast, Lunch, Dinner) with varied ingredients that align with the preferences.
 3. Meals should be different from previous days to keep the user from getting bored, but must remain within their taste preferences.
 4. Ensure the meals are nutritionally balanced and suitable for the user's age, gender, and weight.
 5. Meals must feel personalized and include culturally or taste-appropriate options based on the preferred cuisines.
@@ -139,20 +149,12 @@ app.post('/api/openai', async (req, res) => {
 });
 
 // ------------------------------
-// Static files and frontend
+// 4. Catch-all GET Route for SPA Navigation
 // ------------------------------
-
-// Set the frontend path (parent folder of bite-right-backend)
-const frontendPath = path.join(__dirname, '..');
-console.log(`🛠 DEBUG: Serving frontend from: ${frontendPath}`);
-
-// Serve static files from the frontend directory
-app.use(express.static(frontendPath));
-
-// Catch-all GET route: serve index.html (for client-side routing)
+// This route should only catch requests that did not match a static file.
 app.get('*', (req, res) => {
   const indexPath = path.join(frontendPath, 'index.html');
-  console.log(`🛠 DEBUG: Attempting to serve ${indexPath}`);
+  console.log(`🛠 DEBUG: Serving index.html for route ${req.url}`);
   res.sendFile(indexPath, (err) => {
     if (err) {
       console.error("❌ Error serving index.html:", err);
@@ -162,7 +164,7 @@ app.get('*', (req, res) => {
 });
 
 // ------------------------------
-// Local server startup & export for Vercel
+// 5. Local Server Startup & Export for Vercel
 // ------------------------------
 if (process.env.NODE_ENV !== 'production') {
   app.listen(port, () => {
