@@ -1,3 +1,4 @@
+# Ignore environment variables and dependencies
+.env
 node_modules/
-.env
-.env
+**/node_modules/

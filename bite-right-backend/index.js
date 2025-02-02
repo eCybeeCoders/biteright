@@ -1,24 +1,24 @@
+require('dotenv').config();
+console.log("OPENAI_API_KEY:", process.env.OPENAI_API_KEY);
+
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
+const path = require('path');         // Require the path module
 const OpenAI = require('openai');
-
-// Load environment variables
-dotenv.config();
 
 const app = express();
 const port = 3000;
 
-// ✅ HARDCODE THE FRONTEND PATH
-const frontendPath = "C:/Users/neelt/VS CODE/BiteRight";  // <-- Change this if needed
+// Set the frontend path relative to this file (go up one directory)
+const frontendPath = path.join(__dirname, '..');
 console.log(`🛠 DEBUG: Serving frontend from: ${frontendPath}`);
 
-// ✅ Serve Static Files
+// Serve static files from the frontend directory
 app.use(express.static(frontendPath));
 
-// ✅ Serve index.html for all routes
+// Serve index.html for all routes
 app.get('*', (req, res) => {
-    const indexPath = "C:/Users/neelt/VS CODE/BiteRight/index.html";  // <-- Full Path to index.html
+    const indexPath = path.join(frontendPath, 'index.html');  // Build the full path to index.html
     console.log(`🛠 DEBUG: Attempting to serve ${indexPath}`);
 
     res.sendFile(indexPath, (err) => {
@@ -29,14 +29,11 @@ app.get('*', (req, res) => {
     });
 });
 
-
-
-
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// ✅ Initialize the new OpenAI class (4.x)
+// Initialize the OpenAI class (4.x)
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -103,7 +100,7 @@ IMPORTANT INSTRUCTIONS:
       console.warn('Meal plan not in pure JSON format:', err);
     }
 
-    // ✅ Fallback if mealPlan is invalid or empty
+    // Fallback if mealPlan is invalid or empty
     if (!Array.isArray(mealPlan) || mealPlan.length < 3) {
       console.warn('Received invalid or empty meal plan. Using fallback.');
       mealPlan = [
@@ -128,7 +125,10 @@ IMPORTANT INSTRUCTIONS:
     // Return to the frontend
     res.status(200).json({ mealPlan });
   } catch (error) {
-    console.error('Error in /api/generate-meal-plan:', error);
+    console.error('Error in /api/generate-meal-plan:', error.message);
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+    }
     res.status(500).json({ error: 'Failed to generate meal plan.' });
   }
 });
@@ -152,8 +152,8 @@ app.post('/api/openai', async (req, res) => {
     const completion = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: req.body.maxTokens || 200,
-      temperature: req.body.temperature || 0.7,
+      max_tokens: req.body.maxTokens || 500,
+      temperature: req.body.temperature || 0.5,
     });
 
     res.status(200).json(completion);
