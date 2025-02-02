@@ -3,31 +3,11 @@ console.log("OPENAI_API_KEY:", process.env.OPENAI_API_KEY);
 
 const express = require('express');
 const cors = require('cors');
-const path = require('path'); // For building paths
+const path = require('path');
 const OpenAI = require('openai');
 
 const app = express();
 const port = 3000;
-
-// Set the frontend path relative to this file (go up one directory)
-const frontendPath = path.join(__dirname, '..');
-console.log(`🛠 DEBUG: Serving frontend from: ${frontendPath}`);
-
-// Serve static files from the parent folder (your frontend)
-app.use(express.static(frontendPath));
-
-// Serve index.html for all routes
-app.get('*', (req, res) => {
-  const indexPath = path.join(frontendPath, 'index.html');
-  console.log(`🛠 DEBUG: Attempting to serve ${indexPath}`);
-
-  res.sendFile(indexPath, (err) => {
-    if (err) {
-      console.error("❌ Error serving index.html:", err);
-      res.status(500).send("Error loading the site.");
-    }
-  });
-});
 
 // Middleware
 app.use(cors());
@@ -37,6 +17,10 @@ app.use(express.json());
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+
+// ------------------------------
+// API Endpoints (defined first)
+// ------------------------------
 
 // Endpoint to generate meal plan
 app.post('/api/generate-meal-plan', async (req, res) => {
@@ -154,12 +138,36 @@ app.post('/api/openai', async (req, res) => {
   }
 });
 
-// For local development, start the server if not in production
+// ------------------------------
+// Static files and frontend
+// ------------------------------
+
+// Set the frontend path (parent folder of bite-right-backend)
+const frontendPath = path.join(__dirname, '..');
+console.log(`🛠 DEBUG: Serving frontend from: ${frontendPath}`);
+
+// Serve static files from the frontend directory
+app.use(express.static(frontendPath));
+
+// Catch-all GET route: serve index.html (for client-side routing)
+app.get('*', (req, res) => {
+  const indexPath = path.join(frontendPath, 'index.html');
+  console.log(`🛠 DEBUG: Attempting to serve ${indexPath}`);
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      console.error("❌ Error serving index.html:", err);
+      res.status(500).send("Error loading the site.");
+    }
+  });
+});
+
+// ------------------------------
+// Local server startup & export for Vercel
+// ------------------------------
 if (process.env.NODE_ENV !== 'production') {
   app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
   });
 }
 
-// Export the Express app for Vercel
 module.exports = app;
