@@ -9,19 +9,23 @@ const OpenAI = require('openai');
 const app = express();
 const port = 3000;
 
+// Set the public path relative to index.js (inside bite-right-backend)
+const publicPath = path.join(__dirname, 'public');
+console.log(`🛠 DEBUG: Serving static files from: ${publicPath}`);
+
 // ------------------------------
-// Middleware
+// 1. Serve Static Files First (from the public folder)
+// ------------------------------
+app.use(express.static(publicPath, { etag: false, maxAge: 0 }));
+
+// ------------------------------
+// 2. Middleware for API requests
 // ------------------------------
 app.use(cors());
 app.use(express.json());
 
-// Initialize the OpenAI class
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 // ------------------------------
-// API Endpoints
+// 3. API Endpoints
 // ------------------------------
 
 // Endpoint to generate meal plan
@@ -31,7 +35,7 @@ app.post('/api/generate-meal-plan', async (req, res) => {
     console.log('Generating meal plan for:', date);
     console.log('User Preferences:', preferences);
 
-    const weekStartDate = new Date(); // Or parse from `date` if desired
+    const weekStartDate = new Date();
     const prompt = `
 Generate meal plans for the week starting ${weekStartDate.toDateString()}.
 
@@ -141,19 +145,10 @@ app.post('/api/openai', async (req, res) => {
 });
 
 // ------------------------------
-// Static Files and Frontend
+// 4. Catch-all GET Route for SPA Navigation
 // ------------------------------
-
-// Define the frontend path (parent of bite-right-backend)
-const frontendPath = path.join(__dirname, '..');
-console.log(`🛠 DEBUG: Serving frontend from: ${frontendPath}`);
-
-// Serve static files from the frontend folder with caching disabled (to force a fresh load)
-app.use(express.static(frontendPath, { etag: false, maxAge: 0 }));
-
-// Catch-all GET route for SPA navigation (should only be used if no static file matches)
 app.get('*', (req, res) => {
-  const indexPath = path.join(frontendPath, 'index.html');
+  const indexPath = path.join(publicPath, 'index.html');
   console.log(`🛠 DEBUG: Serving index.html for route ${req.url}`);
   res.sendFile(indexPath, (err) => {
     if (err) {
@@ -164,7 +159,7 @@ app.get('*', (req, res) => {
 });
 
 // ------------------------------
-// Local Server Startup & Export for Vercel
+// 5. Local Server Startup & Export for Vercel
 // ------------------------------
 if (process.env.NODE_ENV !== 'production') {
   app.listen(port, () => {
