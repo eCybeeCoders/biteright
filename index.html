@@ -622,8 +622,8 @@
     async function generateMealPlan(date, userPreferences) {
       console.log("Generating meal plan for:", date);
       try {
-        const response = await fetch("http://localhost:3000/api/generate-meal-plan", {
-          method: "POST",
+        const response = await fetch("/api/generate-meal-plan", {  // Use relative URL here
+            method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ date, preferences: userPreferences })
         });
