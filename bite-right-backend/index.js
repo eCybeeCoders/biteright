@@ -16,7 +16,7 @@ const publicPath = path.join(__dirname, 'public');
 console.log(`🛠 DEBUG: Serving static files from: ${publicPath}`);
 
 // ------------------------------
-// 2. Serve Static Files from the Public Folder
+// 2. Serve Static Files from Public Folder
 // ------------------------------
 app.use(express.static(publicPath, { etag: false, maxAge: 0 }));
 
@@ -111,11 +111,8 @@ IMPORTANT INSTRUCTIONS:
 
     res.status(200).json({ mealPlan });
   } catch (error) {
-    console.error('Error in /api/generate-meal-plan:', error.message);
-    if (error.response) {
-      console.error('Response data:', error.response.data);
-    }
-    res.status(500).json({ error: 'Failed to generate meal plan.' });
+    console.error('Error in /api/generate-meal-plan:', JSON.stringify(error, null, 2));
+    res.status(500).json({ error: 'Failed to generate meal plan.', details: error.toString() });
   }
 });
 
