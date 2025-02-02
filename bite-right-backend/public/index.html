@@ -400,7 +400,7 @@
       vegan: [
         "Red Meat","Beef","Pork/Bacon","Lamb","Veal","Poultry","Chicken","Turkey","Fish",
         "Salmon","Tuna","Tilapia","Sardines","Trout & Snapper","Shellfish","Eggs","Mayo",
-        "Honey","Non - Kosher Meats"
+        "Honey","Non - Kosher Meats" ,"Dairy","Milk","Cream","Cheese","Yogurt","Cottage Cheese","Whey Powder"
       ],
       vegetarian: [
         "Red Meat","Beef","Pork/Bacon","Lamb","Veal","Poultry","Chicken","Turkey","Fish",
@@ -663,7 +663,7 @@
       3. Nutritional Value: Include a breakdown of the meal's nutritional value, focusing on a balanced diet with details such as calories, protein, fat, etc.
     
       <Output Format>
-      **Strictly follow the format below for the recipe:**
+      **Strictly follow the format below for the recipe do not add any unnecessary numbering:**
       **Recipe Name: Recipe Title**
 
       **Ingredients:**
@@ -694,6 +694,7 @@
 
       </Output Format>
       
+
       `;
       try {
         const response = await fetch("/api/openai", {
@@ -793,7 +794,7 @@
         Generate a ${mealTypeToRegenerate} meal based on the following preferences:
         - Cuisine or Mood: ${mood}
         - Spice Level: ${spiceLevel}
-        - Dietary Restrictions: ${userPreferences.exclusions.join(", ")}
+        - Strictly follow dietary Restrictions: ${userPreferences.exclusions.join(", ")}
         Output ONLY valid JSON in this exact format:
 {
   "type": "...",
