@@ -9,32 +9,19 @@ const OpenAI = require('openai');
 const app = express();
 const port = 3000;
 
-// Determine the frontend path (parent folder of bite-right-backend)
-// Your folder structure should be:
-// biteright/           <-- Project root (contains index.html, images, etc.)
-// ├── index.html
-// ├── vegan.png         (and other images)
-// └── bite-right-backend/
-//     ├── index.js      <-- This file
-//     ├── package.json
-//     └── ...
-const frontendPath = path.join(__dirname, '..');
-console.log(`🛠 DEBUG: Serving frontend from: ${frontendPath}`);
-
 // ------------------------------
-// 1. Serve Static Files First
-// ------------------------------
-// This middleware will serve any static file (like images, CSS, etc.) that exists in the frontend folder.
-app.use(express.static(frontendPath));
-
-// ------------------------------
-// 2. Middleware for API requests
+// Middleware
 // ------------------------------
 app.use(cors());
 app.use(express.json());
 
+// Initialize the OpenAI class
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 // ------------------------------
-// 3. API Endpoints
+// API Endpoints
 // ------------------------------
 
 // Endpoint to generate meal plan
@@ -154,9 +141,17 @@ app.post('/api/openai', async (req, res) => {
 });
 
 // ------------------------------
-// 4. Catch-all GET Route for SPA Navigation
+// Static Files and Frontend
 // ------------------------------
-// This catches any request not already handled (after static files are served)
+
+// Define the frontend path (parent of bite-right-backend)
+const frontendPath = path.join(__dirname, '..');
+console.log(`🛠 DEBUG: Serving frontend from: ${frontendPath}`);
+
+// Serve static files from the frontend folder with caching disabled (to force a fresh load)
+app.use(express.static(frontendPath, { etag: false, maxAge: 0 }));
+
+// Catch-all GET route for SPA navigation (should only be used if no static file matches)
 app.get('*', (req, res) => {
   const indexPath = path.join(frontendPath, 'index.html');
   console.log(`🛠 DEBUG: Serving index.html for route ${req.url}`);
@@ -169,7 +164,7 @@ app.get('*', (req, res) => {
 });
 
 // ------------------------------
-// 5. Local Server Startup & Export for Vercel
+// Local Server Startup & Export for Vercel
 // ------------------------------
 if (process.env.NODE_ENV !== 'production') {
   app.listen(port, () => {
