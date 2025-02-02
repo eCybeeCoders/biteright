@@ -1,0 +1,10 @@
+{
+    "version": 2,
+    "builds": [
+      { "src": "bite-right-backend/index.js", "use": "@vercel/node" }
+    ],
+    "routes": [
+      { "src": "/(.*)", "dest": "bite-right-backend/index.js" }
+    ]
+  }
+  
