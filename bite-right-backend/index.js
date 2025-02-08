@@ -55,7 +55,7 @@ Use these preferences:
 - User info: Gender: ${preferences.generalInfo.gender}, Age: ${preferences.generalInfo.age}, Height: ${preferences.generalInfo.height}, Weight: ${preferences.generalInfo.weight}.
 
 IMPORTANT INSTRUCTIONS:
-1. STRICTLY exclude all dietary restrictions, including derivatives.
+1. STRICTLY exclude ALL dietary restrictions, including derivatives - no chicken = no chicken broth as well. Please be careful not to include the foods included in  ${preferences.exclusions.join(", ")} to ensure the person can enjoy his/her meal.
 2. Provide exactly 3 unique meals (Breakfast, Lunch, Dinner) with varied ingredients that align with the preferences.
 3. Meals should be different from previous days to keep the user from getting bored, but must remain within their taste preferences.
 4. Ensure the meals are nutritionally balanced and suitable for the user's age, gender, and weight.
