@@ -60,7 +60,7 @@ IMPORTANT INSTRUCTIONS:
 3. Meals should be different from previous days to keep the user from getting bored, but must remain within their taste preferences.
 4. Ensure the meals are nutritionally balanced and suitable for the user's age, gender, and weight.
 5. Meals must feel personalized and include culturally or taste-appropriate options based on the preferred cuisines.
-6. Ensure meals are specifically protein rich and filled with other nutrients essential for the growing process.
+6. Ensure meals are specifically protein rich (150 g a day total) and filled with other nutrients essential for the growing process.
 7. **Output valid JSON ONLY** with no \`\`\` fences, in this format:
 [
   { "type": "", "name": "", "description": "" },
