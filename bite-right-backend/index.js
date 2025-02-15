@@ -4,9 +4,9 @@ console.log("OPENAI_API_KEY:", process.env.OPENAI_API_KEY);
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const OpenAI = require('openai');
+const OpenAI = require('openai');  // Ensure this is imported
 
-// Initialize the OpenAI client
+// Create an instance of OpenAI and ensure it is defined.
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -55,12 +55,13 @@ Use these preferences:
 - User info: Gender: ${preferences.generalInfo.gender}, Age: ${preferences.generalInfo.age}, Height: ${preferences.generalInfo.height}, Weight: ${preferences.generalInfo.weight}.
 
 IMPORTANT INSTRUCTIONS:
-1. STRICTLY exclude ALL dietary restrictions, including derivatives - no chicken = no chicken broth as well. Please be careful not to include the foods in ${preferences.exclusions.join(", ")}.
+1. STRICTLY exclude ALL dietary restrictions, including derivatives - no chicken = no chicken broth as well. Please be careful not to include the foods included in  ${preferences.exclusions.join(", ")} to ensure the person can enjoy his/her meal.
 2. Provide exactly 3 unique meals (Breakfast, Lunch, Dinner) with varied ingredients that align with the preferences.
 3. Meals should be different from previous days to keep the user from getting bored, but must remain within their taste preferences.
 4. Ensure the meals are nutritionally balanced and suitable for the user's age, gender, and weight.
 5. Meals must feel personalized and include culturally or taste-appropriate options based on the preferred cuisines.
-6. **Output valid JSON ONLY** with no \`\`\` fences, in this format:
+6. Ensure meals are specifically protein rich (150 g a day total) and filled with other nutrients essential for the growing process.
+7. **Output valid JSON ONLY** with no \`\`\` fences, in this format:
 [
   { "type": "", "name": "", "description": "" },
   { "type": "", "name": "", "description": "" },
@@ -68,6 +69,7 @@ IMPORTANT INSTRUCTIONS:
 ]
 `;
 
+    // Use the openai instance we created above.
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
@@ -121,16 +123,26 @@ IMPORTANT INSTRUCTIONS:
   }
 });
 
-// Endpoint for OpenAI text completions (no image generation)
+// Endpoint for recipes or images
 app.post('/api/openai', async (req, res) => {
   try {
-    const { prompt } = req.body;
+    const { prompt, imageGeneration, n = 1, size = '1024x1024' } = req.body;
+    if (imageGeneration) {
+      const imageResp = await openai.images.generate({
+        prompt,
+        n,
+        size,
+      });
+      return res.status(200).json(imageResp.data);
+    }
+
     const completion = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: req.body.maxTokens || 500,
       temperature: req.body.temperature || 0.5,
     });
+
     res.status(200).json(completion);
   } catch (error) {
     console.error('Error in /api/openai:', error);
