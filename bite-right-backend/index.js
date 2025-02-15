@@ -123,19 +123,11 @@ IMPORTANT INSTRUCTIONS:
   }
 });
 
-// Endpoint for recipes or images
+// Endpoint for text-based OpenAI requests only (DALL‑E removed)
 app.post('/api/openai', async (req, res) => {
   try {
-    const { prompt, imageGeneration, n = 1, size = '1024x1024' } = req.body;
-    if (imageGeneration) {
-      const imageResp = await openai.images.generate({
-        prompt,
-        n,
-        size,
-      });
-      return res.status(200).json(imageResp.data);
-    }
-
+    const { prompt } = req.body;
+    // Directly handle the text-based completion request:
     const completion = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
@@ -149,6 +141,7 @@ app.post('/api/openai', async (req, res) => {
     res.status(500).json({ error: 'OpenAI request failed.' });
   }
 });
+
 
 // ------------------------------
 // 5. Catch-all GET Route for SPA Navigation
